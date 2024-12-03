@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Post.Title}} - Forum</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+{{template "header" .}}
+
+<main class="main-container">
+    {{template "left_sidebar.html" .}}
+
+    <div class="main-content">
+        <div class="post-detail">
+            <h2>{{.Post.Title}}</h2>
+            <div class="post-meta">
+                <span class="post-author">Posted by {{.Post.Username}}</span>
+                <span class="post-date">on {{.Post.Created.Format "02 Jan 2006 at 15:04"}}</span>
+            </div>
+            <div class="post-content">
+                <pre class="content-preserve">{{.Post.Content}}</pre>
+            </div>
+
+            <div class="post-footer">
+                <div class="post-categories">
+                    {{range .Post.Categories}}
+                    <span class="category">{{.}}</span>
+                    {{end}}
+                </div>
+                <div class="post-votes">
+                    <button onclick="toggleVote('{{.Post.ID}}', 1)" class="vote-button like-button {{if eq .Post.UserVote 1}}active{{end}}">
+                        <img src="/static/img/like.png" alt="Like"> {{.Post.Likes}}
+                    </button>
+                    <button onclick="toggleVote('{{.Post.ID}}', -1)" class="vote-button dislike-button {{if eq .Post.UserVote -1}}active{{end}}">
+                        <img src="/static/img/dislike.png" alt="Dislike"> {{.Post.Dislikes}}
+                    </button>
+                </div>
+            </div>
+
+            <div class="comments-list user-comments">
+                {{if .Comments}}
+                <h4>All Comments</h4>
+                {{range .Comments}}
+                <div class="comment">
+                    <div class="comment-meta">
+                        <span>Posted by {{.Username}}</span>
+                        <span style="float: right;">on {{.Created.Format "02 Jan 2006 at 15:04"}}</span>
+                    </div>
+                    <pre class="content-preserve">{{.Content}}</pre>
+
+                    <div class="comment-votes">
+                        <button onclick="toggleCommentVote('{{.ID}}', 1)" class="vote-button-comment like-button {{if eq .UserVote 1}}active{{end}}">
+                            <img src="/static/img/like.png" alt="Like"> {{.Likes}}
+                        </button>
+                        <button onclick="toggleCommentVote('{{.ID}}', -1)" class="vote-button-comment dislike-button {{if eq .UserVote -1}}active{{end}}">
+                            <img src="/static/img/dislike.png" alt="Dislike"> {{.Dislikes}}
+                        </button>
+                    </div>
+                </div>
+
+                {{end}}
+                {{else}}
+                <p>No comments yet.</p>
+                {{end}}
+            </div>
+
+
+            {{if .LoggedIn}}
+            <form action="/post/{{.Post.ID}}/comment" method="POST" class="comment-form">
+                <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
+                <button type="submit">Post Comment</button>
+            </form>
+            {{else}}
+            <div class="login-to-comment">
+                <p>You need to <a href="/forum/login">Log in</a> to post a comment.</p>
+            </div>
+            {{end}}
+
+
+        </div>
+
+        <div class="separator-line"></div>
+    </div>
+
+    {{template "right_sidebar.html" .}}
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
