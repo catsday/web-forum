@@ -8,7 +8,7 @@ The project follows best practices in interface design, adhering to Schneiderman
 
 ## Project Structure
 
-The Groupie Tracker Filters project is structured as follows:
+The Forum project is structured as follows:
 
 ```
 /forum
